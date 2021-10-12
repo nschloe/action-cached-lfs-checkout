@@ -25,7 +25,7 @@ Simply replace the above by
 
 ```yaml
 - name: Checkout code
-  uses: nschloe/action-checkout-with-lfs-cache@v1
+  uses: nschloe/action-cached-lfs-checkout@v1
 ```
 
 ### Further reading
