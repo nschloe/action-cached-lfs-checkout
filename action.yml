@@ -8,6 +8,7 @@ runs:
 
     - name: Create LFS file list
       run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      shell: bash
 
     - name: Restore LFS cache
       uses: actions/cache@v2
@@ -18,3 +19,4 @@ runs:
 
     - name: Git LFS Pull
       run: git lfs pull
+      shell: bash
