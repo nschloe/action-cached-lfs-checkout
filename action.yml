@@ -1,5 +1,11 @@
 name: "checkout-with-lfs-cache"
+
 description: "Git checkout with LFS files from cache"
+
+branding:
+  icon: "download"
+  color: "green"
+
 runs:
   using: "composite"
   steps:

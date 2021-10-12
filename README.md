@@ -12,19 +12,29 @@ pulling. The repository size remains small.
 [GitHub applies some fees when the total amount of LFS downloads surpasses
 1GB.](https://github.com/github/roadmap/issues/237) Unfortunately, even gh-actions runs,
 when used with
+
 ```yaml
 - name: Checkout code
   uses: actions/checkout@v2
   with:
     lfs: true
 ```
+
 count towards that limit. To _cache_ the LFS downloads, you can instead use this action.
 Simply replace the above by
+
 ```yaml
 - name: Checkout code
   uses: nschloe/action-checkout-with-lfs-cache@v1
 ```
 
+### Further reading
+
+- [Luca Benci, Avoiding git-lfs bandiwdth waste with GitHub and
+  CircleCI](https://www.develer.com/en/avoiding-git-lfs-bandiwdth-waste-with-github-and-circleci/)
+- [actions/checkout issue: Cache for
+  LFS](https://github.com/actions/checkout/issues/165)
 
 ### License
+
 The scripts and documentation in this project are released under the MIT License.
