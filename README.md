@@ -1,4 +1,4 @@
-# action-checkout-with-lfs-cache
+# GitHub action: Cached LFS checkout
 
 Storing (large) binary files in Git trees is not recommended because any change to the
 file will result in a re-upload of the entire file when pushing, increasing the size of
