@@ -28,10 +28,13 @@ Simply replace the above by
   uses: nschloe/action-cached-lfs-checkout@v1
 ```
 
+Check it out [on the GitHub
+Marketplace](https://github.com/marketplace/actions/checkout-with-lfs-cache)!
+
 ### Further reading
 
-- [Luca Benci, Avoiding git-lfs bandiwdth waste with GitHub and
-  CircleCI](https://www.develer.com/en/avoiding-git-lfs-bandiwdth-waste-with-github-and-circleci/)
+- [Luca Benci, Avoiding git-lfs bandwidth waste with GitHub and
+  CircleCI](https://www.develer.com/en/avoiding-git-lfs-bandwidth-waste-with-github-and-circleci/)
 - [actions/checkout issue: Cache for
   LFS](https://github.com/actions/checkout/issues/165)
 
