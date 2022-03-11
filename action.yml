@@ -6,6 +6,16 @@ branding:
   icon: "download"
   color: "green"
 
+inputs:
+  include:
+    description: "Explicitly include files for LFS"
+    required: false
+    default: "*"
+  exclude:
+    description: "Explicitly exclude files for LFS"
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -13,7 +23,8 @@ runs:
       uses: actions/checkout@v2
 
     - name: Create LFS file list
-      run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      run: |
+        git lfs ls-files -l --include  ${{ inputs.include }} --exclude  ${{ inputs.exclude }}. | cut -d ' ' -f1 | sort > .lfs-assets-id
       shell: bash
 
     - name: Restore LFS cache
