@@ -33,7 +33,7 @@ Simply replace the above by
 ```
 
 Check it out [on the GitHub
-Marketplace](https://github.com/marketplace/actions/checkout-with-lfs-cache)!
+Marketplace](https://github.com/marketplace/actions/cached-lfs-checkout)!
 
 ### Further reading
 
