@@ -7,6 +7,37 @@ branding:
   color: "green"
 
 inputs:
+  repository:
+    description: 'Repository name with owner. For example, actions/checkout'
+    default: ${{ github.repository }}
+  ref:
+    description: >
+      The branch, tag or SHA to checkout. When checking out the repository that
+      triggered a workflow, this defaults to the reference or SHA for that
+      event.  Otherwise, uses the default branch.
+    required: false
+    default: ${{ github.ref }}
+  token:
+    description: >
+      Personal access token (PAT) used to fetch the repository. The PAT is configured
+      with the local git config, which enables your scripts to run authenticated git
+      commands. The post-job step removes the PAT.
+      We recommend using a service account with the least permissions necessary.
+      Also when generating a new PAT, select the least scopes necessary.
+      [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
+    required: false
+    default: ${{ github.token }}
+  path:
+    description: 'Relative path under $GITHUB_WORKSPACE to place the repository'
+  lfs:
+    description: 'Whether to download Git-LFS files'
+    default: false
+  submodules:
+    description: >
+      Whether to checkout submodules: `true` to checkout submodules or `recursive` to
+      recursively checkout submodules.
+    required: false
+    default: false
   include:
     description: "Explicitly include files for LFS"
     required: false
@@ -20,14 +51,22 @@ runs:
   using: "composite"
   steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        repository:  ${{ inputs.repository }}
+        ref:  ${{ inputs.ref }}
+        token: ${{ inputs.token }}
+        path: ${{ inputs.path }}
+        lfs: ${{ inputs.lfs }}
 
     - name: Create LFS file list
+      if: ${{ inputs.lfs == 'true' }}
       run: |
         git lfs ls-files --long --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}" | cut -d ' ' -f1 | sort > .lfs-assets-id
       shell: bash
 
     - name: Restore LFS cache
+      if: ${{ inputs.lfs == 'true' }}
       uses: actions/cache@v2
       id: lfs-cache
       with:
@@ -35,5 +74,6 @@ runs:
         key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
 
     - name: Git LFS Pull
+      if: ${{ inputs.lfs == 'true' }}
       run: git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
       shell: bash
