@@ -1,0 +1,43 @@
+#######################################################
+# This is the main CI workflow test
+#######################################################
+name: Test
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+  pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Test on 
+  Test:
+    # The type of runner that the job will run on: ubuntu
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    
+      # Checksout action repository under $GITHUB_WORKSPACE
+      - name: Checkout action 
+        uses: actions/checkout@v3
+        with:
+          repository: rohmanngmbh/action-checkout
+
+      # Run checkout with lfs using action
+      - name: Checkout with lfs
+        uses: ./
+        with:
+          lfs: true
+          path: with
+          ref: ${{ github.ref }}
+        
+      # Run checkout without lfs using action
+      - name: Checkout without lfs
+        uses: ./
+        with:
+          path: without
+          ref: ${{ github.ref }}
