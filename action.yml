@@ -1,4 +1,4 @@
-name: "Extended cached LFS checkout"
+name: "Cached LFS checkout"
 
 description: "Git checkout with LFS files from cache"
 
