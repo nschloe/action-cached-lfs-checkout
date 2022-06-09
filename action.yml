@@ -19,6 +19,10 @@ inputs:
     description: "Number of commits to fetch. 0 indicates all history for all tags and branches"
     required: false
     default: 1
+  ref:
+    description: "The branch, tag or SHA to checkout"
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -27,6 +31,7 @@ runs:
       uses: actions/checkout@v3
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
+        ref: ${{ inputs.ref }}
 
     - name: Create LFS file list
       run: |
