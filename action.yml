@@ -15,12 +15,18 @@ inputs:
     description: "Explicitly exclude files for LFS"
     required: false
     default: ""
+  fetch_depth:
+    description: "Number of commits to fetch. 0 indicates all history for all tags and branches"
+    required: false
+    default: 1
 
 runs:
   using: "composite"
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
 
     - name: Create LFS file list
       run: |
