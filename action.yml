@@ -52,7 +52,7 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: ${{ inputs.fetch_depth }}
+        fetch-depth: ${{ inputs.fetch-depth }}
         ref: ${{ inputs.ref }}
         repository: ${{ inputs.repository }}
         token: ${{ inputs.token }}
