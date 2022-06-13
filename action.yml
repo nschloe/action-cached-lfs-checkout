@@ -70,6 +70,15 @@ runs:
       id: cache-paths
       shell: bash
 
+    - run: echo ${{ steps.cache-paths.outputs.CACHE_PATHS }}
+      shell: bash
+
+    - run: cd .git && ls -lashi
+      shell: bash
+
+    - run: cd .git/modules && ls -lashi
+      shell: bash
+
     - name: Restore LFS cache
       uses: actions/cache@v3
       id: lfs-cache
