@@ -66,19 +66,8 @@ runs:
       shell: bash
 
     - name: Create Submodule LFS Cache Paths
-      run: | 
-        echo $(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)
-        echo "::set-output name=CACHE_PATHS::$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)"
+      run: echo "::set-output name=CACHE_PATHS::$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)"
       id: cache-paths
-      shell: bash
-
-    - run: echo ${{ steps.cache-paths.outputs.CACHE_PATHS }}
-      shell: bash
-
-    - run: cd .git && ls -lashi
-      shell: bash
-
-    - run: cd .git/modules && ls -lashi
       shell: bash
 
     - name: Restore LFS cache
@@ -90,11 +79,11 @@ runs:
           ${{ steps.cache-paths.outputs.CACHE_PATHS }}
         key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
 
-    # - name: Git LFS Pull
-    #   run: |
-    #       git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
-    #       git submodule foreach git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
-    #   shell: bash
+    - name: Git LFS Pull
+      run: |
+          git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+          git submodule foreach git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+      shell: bash
 
     # Don't leave behind temp files in case build system checks for dirty workspace
     - name: Cleanup Temp Files
