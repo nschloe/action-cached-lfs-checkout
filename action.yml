@@ -25,7 +25,7 @@ inputs:
       triggered a workflow, this defaults to the reference or SHA for that
       event.  Otherwise, uses the default branch.
     required: false
-    default: ${{ github.ref }}
+    default:  ''
   repository:
     description: 'Repository name with owner. For example, actions/checkout'
     default: ${{ github.repository }}
