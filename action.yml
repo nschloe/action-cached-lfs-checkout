@@ -39,10 +39,6 @@ inputs:
       [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
     required: false
     default: ${{ github.token }}
-  path:
-    description: 'Relative path under $GITHUB_WORKSPACE to place the repository'
-    required: false
-    default: ""
   submodules:
     description: >
       Whether to checkout submodules: `true` to checkout submodules or `recursive` to
@@ -60,7 +56,6 @@ runs:
         ref: ${{ inputs.ref }}
         repository: ${{ inputs.repository }}
         token: ${{ inputs.token }}
-        path: ${{ inputs.path }}
         submodules: ${{ inputs.submodules }}
 
     - name: Create LFS file list
@@ -70,11 +65,17 @@ runs:
         cat .lfs-assets-id-unsorted | sort > .lfs-assets-id
       shell: bash
 
+    - name: Create Submodule LFS Cache Paths
+      run: echo '::set-output name=CACHE_PATHS::$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)'
+      id: cache-paths
+
     - name: Restore LFS cache
       uses: actions/cache@v3
       id: lfs-cache
       with:
-        path: .git/lfs
+        path: |
+          .git/lfs
+          ${{ steps.cache-paths.outputs.CACHE_PATHS }}
         key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
 
     - name: Git LFS Pull
