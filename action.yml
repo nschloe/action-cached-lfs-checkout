@@ -44,11 +44,7 @@ runs:
       with:
         path: .git/lfs
         key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-     
-    - name: Git LFS Install
-      run: git lfs install
-      shell: bash
 
-    - name: Git LFS Pull
-      run: git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+    - name: Git LFS Install and Pull
+      run: git lfs install & git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
       shell: bash
