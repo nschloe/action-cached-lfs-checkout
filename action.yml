@@ -25,9 +25,9 @@ inputs:
       triggered a workflow, this defaults to the reference or SHA for that
       event.  Otherwise, uses the default branch.
     required: false
-    default: ''
+    default: ""
   repository:
-    description: 'Repository name with owner. For example, actions/checkout'
+    description: "Repository name with owner. For example, actions/checkout"
     default: ${{ github.repository }}
   token:
     description: >
@@ -81,13 +81,13 @@ runs:
 
     - name: Git LFS Pull
       run: |
-          git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
-          git submodule foreach git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+        git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+        git submodule foreach git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
       shell: bash
 
     # Don't leave behind temp files in case build system checks for dirty workspace
     - name: Cleanup Temp Files
       run: |
-          rm .lfs-assets-id-unsorted
-          rm .lfs-assets-id
+        rm .lfs-assets-id-unsorted
+        rm .lfs-assets-id
       shell: bash
