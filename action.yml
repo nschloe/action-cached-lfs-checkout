@@ -20,9 +20,31 @@ inputs:
     required: false
     default: 1
   ref:
-    description: "The branch, tag or SHA to checkout"
+    description: >
+      The branch, tag or SHA to checkout. When checking out the repository that
+      triggered a workflow, this defaults to the reference or SHA for that
+      event.  Otherwise, uses the default branch.
     required: false
     default: ''
+  repository:
+    description: 'Repository name with owner. For example, actions/checkout'
+    default: ${{ github.repository }}
+  token:
+    description: >
+      Personal access token (PAT) used to fetch the repository. The PAT is configured
+      with the local git config, which enables your scripts to run authenticated git
+      commands. The post-job step removes the PAT.
+      We recommend using a service account with the least permissions necessary.
+      Also when generating a new PAT, select the least scopes necessary.
+      [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
+    required: false
+    default: ${{ github.token }}
+  submodules:
+    description: >
+      Whether to checkout submodules: `true` to checkout submodules or `recursive` to
+      recursively checkout submodules.
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -32,19 +54,40 @@ runs:
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
         ref: ${{ inputs.ref }}
+        repository: ${{ inputs.repository }}
+        token: ${{ inputs.token }}
+        submodules: ${{ inputs.submodules }}
 
     - name: Create LFS file list
       run: |
-        git lfs ls-files --long --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}" | cut -d ' ' -f1 | sort > .lfs-assets-id
+        git lfs ls-files --long --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}" | cut -d ' ' -f1 > .lfs-assets-id-unsorted
+        git submodule foreach git lfs ls-files --long --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}" | cut -d ' ' -f1 >> .lfs-assets-id-unsorted
+        cat .lfs-assets-id-unsorted | sort > .lfs-assets-id
+      shell: bash
+
+    - name: Create Submodule LFS Cache Paths
+      run: echo "::set-output name=CACHE_PATHS::$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)"
+      id: cache-paths
       shell: bash
 
     - name: Restore LFS cache
       uses: actions/cache@v3
       id: lfs-cache
       with:
-        path: .git/lfs
-        key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+        path: |
+          .git/lfs
+          ${{ steps.cache-paths.outputs.CACHE_PATHS }}
+        key: lfs-${{ hashFiles('.lfs-assets-id') }}-v2
 
     - name: Git LFS Pull
-      run: git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+      run: |
+          git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+          git submodule foreach git lfs pull --include  "${{ inputs.include }}" --exclude  "${{ inputs.exclude }}"
+      shell: bash
+
+    # Don't leave behind temp files in case build system checks for dirty workspace
+    - name: Cleanup Temp Files
+      run: |
+          rm .lfs-assets-id-unsorted
+          rm .lfs-assets-id
       shell: bash
