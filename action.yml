@@ -67,15 +67,11 @@ runs:
 
     - name: Create Submodule LFS Cache Paths
       run: |
-        echo "test1"
-        CACHE_PATHS=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | while read line; do echo ".git/modules/$line/lfs"; done)
-        echo "test2"
-        echo $CACHE_PATHS
-        if [ -n $CACHE_PATHS ]; then
-          echo "test3"
-          echo "CACHE_PATHS=$CACHE_PATHS" >> $GITHUB_OUTPUT
-        fi
-        echo "test4"
+        CACHE_PATHS=""
+        while read line; do
+          CACHE_PATHS+=".git/modules/$line/lfs "
+        done < <(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+        echo "CACHE_PATHS=$CACHE_PATHS" >> $GITHUB_OUTPUT
       id: cache-paths
       shell: bash
 
