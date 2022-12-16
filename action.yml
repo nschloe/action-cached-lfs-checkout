@@ -1,6 +1,6 @@
-name: "Cached LFS checkout"
+name: "AWS-S3 Cached LFS checkout"
 
-description: "Git checkout with LFS files from cache"
+description: "Git checkout with LFS files from S3-Cache"
 
 branding:
   icon: "download"
@@ -76,8 +76,8 @@ runs:
       shell: bash
 
     - name: Restore LFS cache
-      uses: actions/cache@v3
-      id: lfs-cache
+      uses: Idein/action-s3-cache@master
+      id: s3-lfs-cache
       with:
         path: |
           .git/lfs
