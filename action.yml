@@ -45,6 +45,11 @@ inputs:
       recursively checkout submodules.
     required: false
     default: false
+  persist-credentials:
+    description: >
+      'Whether to configure the token or SSH key with the local git config
+    required: false
+    default: true
 
 runs:
   using: "composite"
@@ -57,6 +62,7 @@ runs:
         repository: ${{ inputs.repository }}
         token: ${{ inputs.token }}
         submodules: ${{ inputs.submodules }}
+        persist-credentials: ${{ inputs.persist-credentials }}
 
     - name: Create LFS file list
       run: |
