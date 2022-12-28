@@ -68,9 +68,14 @@ runs:
     - name: Create Submodule LFS Cache Paths
       run: |
         CACHE_PATHS=""
+
+        # loop over the git submodule paths to generate a list of module directories to cache
+        # `git config` is used to extract the `path` value for each git submodule
+        # for more information about the .gitmodules file, see: https://git-scm.com/docs/gitmodules
         while read line; do
           CACHE_PATHS+=".git/modules/$line/lfs "
         done < <(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+
         echo "CACHE_PATHS=$CACHE_PATHS" >> $GITHUB_OUTPUT
       id: cache-paths
       shell: bash
