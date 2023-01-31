@@ -44,12 +44,12 @@ inputs:
       Whether to checkout submodules: `true` to checkout submodules or `recursive` to
       recursively checkout submodules.
     required: false
-    default: 'false'
+    default: false
   persist-credentials:
     description: >
       'Whether to configure the token or SSH key with the local git config
     required: false
-    default: 'false'
+    default: true
 
 runs:
   using: "composite"
