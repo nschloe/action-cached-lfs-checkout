@@ -50,6 +50,14 @@ inputs:
       'Whether to configure the token or SSH key with the local git config
     required: false
     default: true
+  enableCrossOsArchive:
+    description: >
+      Whether the cache is cross-os compatible. This is useful to cache dependencies which
+      are independent of the runner platform. This will help reduce the consumption of the
+      cache quota and help build for multiple platforms from the same cache.
+      [Learn more about cross-os caching](https://github.com/actions/cache/blob/main/tips-and-workarounds.md#cross-os-cache).
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -94,6 +102,7 @@ runs:
           .git/lfs
           ${{ steps.cache-paths.outputs.CACHE_PATHS }}
         key: lfs-${{ hashFiles('.lfs-assets-id') }}-v2
+        enableCrossOsArchive: ${{ inputs.enableCrossOsArchive }}
 
     - name: Git LFS Pull
       run: |
