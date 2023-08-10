@@ -47,7 +47,7 @@ inputs:
     default: false
   persist-credentials:
     description: >
-      'Whether to configure the token or SSH key with the local git config
+      'Whether to configure the token or SSH key with the local git config'
     required: false
     default: true
   enableCrossOsArchive:
