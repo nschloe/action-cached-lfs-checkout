@@ -101,8 +101,8 @@ runs:
         path: |
           .git/lfs
           ${{ steps.cache-paths.outputs.CACHE_PATHS }}
-        key: lfs-v3-${{ github.repository }}-${{ hashFiles('.lfs-assets-id') }}
-        restore-keys: lfs-v3-${{ github.repository }}-
+        key: lfs-v3-${{ inputs.repository }}-${{ hashFiles('.lfs-assets-id') }}
+        restore-keys: lfs-v3-${{ inputs.repository }}-
         enableCrossOsArchive: ${{ inputs.enableCrossOsArchive }}
 
     - name: Git LFS Pull
