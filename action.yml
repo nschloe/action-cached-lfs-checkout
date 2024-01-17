@@ -95,7 +95,7 @@ runs:
       shell: bash
 
     - name: Restore LFS cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: lfs-cache
       with:
         path: |
