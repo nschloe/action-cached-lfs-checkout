@@ -122,6 +122,8 @@ runs:
       run: |
         git lfs pull --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
         git submodule foreach git lfs pull --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
+        git lfs prune
+        git submodule foreach git lfs prune
       shell: bash
 
     # Don't leave behind temp files in case build system checks for dirty workspace
