@@ -85,9 +85,10 @@ runs:
 
     - name: Create LFS file list
       run: |
-        git lfs ls-files --long --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}" | cut -d ' ' -f1 > .lfs-assets-id-unsorted
-        git submodule foreach git lfs ls-files --long --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}" | cut -d ' ' -f1 >> .lfs-assets-id-unsorted
-        sort .lfs-assets-id-unsorted > .lfs-assets-id
+        {
+          git lfs ls-files --long --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
+          git submodule foreach --quiet git lfs ls-files --long --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
+        } | cut -d ' ' -f1 | sort -u > .lfs-assets-id
       shell: bash
 
     - name: Create Submodule LFS Cache Paths
@@ -98,12 +99,12 @@ runs:
         # `git config` is used to extract the `path` value for each git submodule
         # for more information about the .gitmodules file, see: https://git-scm.com/docs/gitmodules
         if [ -f .gitmodules ]; then
-          while read line; do
+          while read -r line; do
             CACHE_PATHS+=".git/modules/$line/lfs "
           done < <(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
         fi
 
-        echo "CACHE_PATHS=$CACHE_PATHS" >> $GITHUB_OUTPUT
+        echo "CACHE_PATHS=$CACHE_PATHS" >> "$GITHUB_OUTPUT"
       id: cache-paths
       shell: bash
 
@@ -121,14 +122,13 @@ runs:
     - name: Git LFS Pull
       run: |
         git lfs pull --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
-        git submodule foreach git lfs pull --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
+        git submodule foreach --quiet git lfs pull --include "${{ inputs.include }}" --exclude "${{ inputs.exclude }}"
         git lfs prune
         git submodule foreach git lfs prune
       shell: bash
 
     # Don't leave behind temp files in case build system checks for dirty workspace
-    - name: Cleanup Temp Files
-      run: |
-        rm .lfs-assets-id-unsorted
-        rm .lfs-assets-id
+    - name: Clean up temp files
+      if: always()
+      run: rm .lfs-assets-id
       shell: bash
